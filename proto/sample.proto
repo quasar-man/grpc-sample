@@ -6,7 +6,11 @@ option go_package = "/pb";
 package proto;
 
 service GreetingService {
+  // Unary RPC用メソッド
   rpc Hello(HelloRequest) returns (HelloResponse);
+
+  // Server Streaming RPC用メソッド
+  rpc HelloServerStream(HelloRequest) returns (stream HelloResponse);
 }
 
 message HelloRequest {
