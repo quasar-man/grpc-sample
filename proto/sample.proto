@@ -11,6 +11,9 @@ service GreetingService {
 
   // Server Streaming RPC用メソッド
   rpc HelloServerStream(HelloRequest) returns (stream HelloResponse);
+
+  // Client Streaming RPC用メソッド
+  rpc HelloClientStream(stream HelloRequest) returns (HelloResponse);
 }
 
 message HelloRequest {

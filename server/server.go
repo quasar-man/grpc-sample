@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/quasar-man/grpc-sample/pb"
@@ -30,4 +32,21 @@ func (s *SampleServer) HelloServerStream(req *pb.HelloRequest, stream pb.Greetin
 		time.Sleep(time.Second * 1)
 	}
 	return nil
+}
+
+func (s *SampleServer) HelloClientStream(stream pb.GreetingService_HelloClientStreamServer) error {
+	nameList := make([]string, 0)
+	for {
+		req, err := stream.Recv()
+		if errors.Is(err, io.EOF) {
+			// クライアントからのリクエストが終了した時の処理
+			messages :=  fmt.Sprintf("Hello, %v", nameList)
+			return stream.SendAndClose(&pb.HelloResponse{Message: messages})
+		}
+
+		if err != nil {
+			return err
+		}
+		nameList = append(nameList, req.GetName())
+	}
 }
