@@ -1,0 +1,18 @@
+// proto は proto2 と proto3 があるが、最新の proto3 を使う
+syntax = "proto3";
+// proto から自動生成される Go のパッケージ名を指定（Go のファイル置き場）
+option go_package = "/pb";
+// package(proto) の宣言
+package proto;
+
+service GreetingService {
+  rpc Hello(HelloRequest) returns (HelloResponse);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string message = 1;
+}
