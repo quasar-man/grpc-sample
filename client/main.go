@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	pb "github.com/quasar-man/grpc-sample/pb"
 	"google.golang.org/grpc"
@@ -151,28 +152,25 @@ func HelloBidirectionalStream() {
 		return
 	}
 
-	sendNum := 5
-	fmt.Println("Please enter %d names.\n", sendNum)
+	fmt.Println("Please enter your names.\n")
 
 	var sendEnd, recvEnd bool
-	sendCount := 0
 
 	for !(sendEnd && recvEnd) {
 		if !sendEnd {
 			scanner.Scan()
 			name := scanner.Text()
 
-			sendCount++
-			if err := stream.Send(&pb.HelloRequest{Name: name}); err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			if sendCount == sendNum {
+			if strings.ToLower(name) == "exit" {
 				sendEnd = true
 				if err := stream.CloseSend(); err != nil {
 					fmt.Println(err)
 				}
+			}
+
+			if err := stream.Send(&pb.HelloRequest{Name: name}); err != nil {
+				fmt.Println(err)
+				return
 			}
 		}
 
