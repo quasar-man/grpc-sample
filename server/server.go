@@ -50,3 +50,21 @@ func (s *SampleServer) HelloClientStream(stream pb.GreetingService_HelloClientSt
 		nameList = append(nameList, req.GetName())
 	}
 }
+
+func (s *SampleServer) HelloBidirectionalStream(stream pb.GreetingService_HelloBidirectionalStreamServer) error {
+	for {
+		req, err := stream.Recv()
+		if errors.Is(err, io.EOF) {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		message := fmt.Sprintf("Ohayo, konnichiha, konbanha %v!", req.GetName())
+		if err := stream.Send(&pb.HelloResponse{Message: message}); err != nil {
+			return err
+		}
+	}
+}
